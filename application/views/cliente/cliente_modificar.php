@@ -24,13 +24,23 @@ foreach ($infoCliente->result() as $row) {
               <form method="post" id="add_create" name="add_create" action="<?= site_url('cliente/modificarCliente') ?>">
                 <div class="form-group">
                   <label>Nombre o Razon social *</label>
-                  <input type="text" name="nombre_razonSocial" class="form-control" value="<?php echo $row->nombre_razonSocial; ?>" required>
+                  <input type="text" name="nombres" class="form-control" value="<?php echo $row->nombres; ?>" required>
                   <input type="hidden" name="idCliente" class="form-control" value="<?php echo $row->idCliente; ?>">
+                </div>
+
+                <div class="form-group">
+                  <label>Primer Apellido</label>
+                  <input type="text" name="primerApellido" class="form-control" value="<?php echo $row->primerApellido; ?>">                  
+                </div>
+
+                <div class="form-group">
+                  <label>Segundo Apellido</label>
+                  <input type="text" name="segundoApellido" class="form-control" value="<?php echo $row->segundoApellido; ?>">                 
                 </div>
                 
                 <div class="form-group">
                   <label>NIT o Carnet de Identidad *</label>
-                  <input type="text" name="nit_carnet" class="form-control" placeholder="Escriba su numero de carnet de identidad" value="<?php echo $row->nit_carnet; ?>" minlength="6" required>
+                  <input type="text" name="nit_carnet" class="form-control" value="<?php echo $row->nit_carnet; ?>" minlength="6" required>
                 </div>
 
                 <div class="form-group">
