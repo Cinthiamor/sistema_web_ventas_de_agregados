@@ -1,3 +1,19 @@
+<script type="text/javascript">
+  function confirm_modal_eliminar(id,activo)
+  {
+      var url = '<?php echo base_url() . "cliente/eliminarClienteBd/" ;?>';
+      $("#url-delete").attr('href', url+id+'/'+activo);
+      jQuery('#modal-4').modal('show', {backdrop: 'static'});
+
+  }
+  function confirm_modal_habilitar(id,activo)
+  {
+      var url = '<?php echo base_url() . "cliente/habilitarClienteBd/" ;?>';
+      $("#url-enabled").attr('href', url+id+'/'+activo);
+      jQuery('#modal-3').modal('show', {backdrop: 'static'});
+
+  }
+</script>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
  
@@ -25,16 +41,7 @@
             <div class="card-header">
             <!-- /.card-header -->
             <div class="card-body">              
-              <?php
-              echo form_open_multipart('cliente/index');
-              ?>
-              <div class="form-group">
-                <button type="submit" class="btn btn-primary btn-xs">Ver Clientes Habilitados</button>
-              </div>
-              <?php
-              echo form_close();
-              ?>
-<table id="example1" class="table table-bordered table-striped">
+              <table id="example1" class="table table-bordered table-striped">
                 <thead>
                   <tr>
                     <th>#</th>
@@ -42,6 +49,7 @@
                     <th>NIT O CARNET</th>
                     <th>DIRECCION</th>
                     <th>TELEFONO</th>
+                    <th>ELIMINAR</th>
                     <th>HABILITAR</th>
                   </tr>
                 </thead>
@@ -51,22 +59,25 @@
                   foreach ($cliente->result() as $row) {
                   ?>
                     <tr>
-                      <th scope="row"><?php echo $indice; ?></th>                      
-                      <td><?php echo $row->nombre_razonSocial; ?></th>
+                      <td scope="row"><?php echo $indice; ?></td>                      
+                      <td><?php echo $row->nombre_razonSocial; ?></td>
                       <td><?php echo $row->nit_carnet; ?></td>
                       <td><?php echo $row->direccion; ?></td>
                       <td><?php echo $row->telefono; ?></td>
+                      <!-- btn eliminar -->
                       <td class="text-center">
-                        <?php
-                        echo form_open_multipart('Cliente/habilitarClienteBd');
-                        ?>
-                        <input type="hidden" name="idCliente" value="<?php echo $row->idCliente; ?>">
-                        
-                        <button type="submit" class="btn btn-success btn-xs" ><i class="fa fa-thumbs-up"></i></button>
-                        <?php
-                        echo form_close();
-                        ?>
+                        <a href="#"
+                          title="Estado Persona" class="btn btn-danger btn-xs" onClick="return confirm_modal_eliminar(<?php echo $row->idCliente; ?>,0)">
+                          <i class="fas fa-trash-alt"></i>
+                        </a>
                       </td>
+                       <!-- btn habilitar -->
+                       <td class="text-center">
+                        <a href="#"
+                          title="Estado Persona" class="btn btn-success btn-xs" onClick="return confirm_modal_habilitar(<?php echo $row->idCliente; ?>,0)">
+                          <i class="fa fa-thumbs-up"></i>
+                        </a>
+                      </td>                    
                     </tr>
                   <?php
                   $indice++;
@@ -86,4 +97,47 @@
     <!-- /.container-fluid -->
   </section>
   <!-- /.content -->
+</div>
+
+<!--//Modal Confirmacion Eliminar-->
+<!-- Modal -->
+<div class="modal fade" id="modal-4" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Eliminar al Cliente</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        ¿Esta seguro que desea elimiar al Cliente?.
+      </div>
+      <div class="modal-footer">
+        <a href="#" id="url-delete" class="btn btn-success btn-sm"><i class="fa fa-check">&nbsp;</i>Aceptar</a>
+        <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal"><i class="fas fa-times">&nbsp;</i>Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--//Modal Confirmacion Deshabilitar-->
+<!-- Modal -->
+<div class="modal fade" id="modal-3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Habilitar al Cliente</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        ¿Esta seguro que desea habilitar al Cliente?.
+      </div>
+      <div class="modal-footer">
+        <a href="#" id="url-enabled" class="btn btn-success btn-sm"><i class="fa fa-check">&nbsp;</i>Aceptar</a>
+        <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal"><i class="fas fa-times">&nbsp;</i>Cerrar</button>
+      </div>
+    </div>
+  </div>
 </div>
