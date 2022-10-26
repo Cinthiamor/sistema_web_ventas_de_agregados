@@ -3,7 +3,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Usuario extends CI_Controller
 {
- 
+  public $exist;
   public function __construct()
   {
     parent::__construct();
@@ -11,28 +11,30 @@ class Usuario extends CI_Controller
 
   public function index()
   {
+    $exist=false;
     $data['msg']=$this->uri->segment(3);
     
-
 		if($this->session->userdata('login'))
 		{
-			redirect('usuario/panel','refresh');
+			redirect('usuario/panel',$exist,'refresh');
 		}
 		else
 		{
 			$this->load->view('inc_header');
-      $this->load->view('inc_menu');
+      //$this->load->view('inc_menu');
       $this->load->view('usuario/usuario_login', $data);
-      $this->load->view('inc_footer');
+      //$this->load->view('inc_footer');
 		} 
   }
   public function listaUsuario()
 	{
+    $data1['logout']=$this->uri->segment(3);
+
     $lista = $this->usuario_model->lista();
     $data['usuario'] = $lista;
 
 		$this->load->view('inc_header');
-    $this->load->view('inc_menu');
+    $this->load->view('inc_menu',$data1);
 		$this->load->view('usuario/usuario_lista',$data);
 		$this->load->view('inc_footer');
 	}
@@ -46,6 +48,7 @@ class Usuario extends CI_Controller
 	}
   public function validar()
 	{
+
 		$login=$_POST['login'];
 		$password=md5($_POST['password']);
 
@@ -56,16 +59,19 @@ class Usuario extends CI_Controller
 			foreach($consulta->result() as $row)
 			{
 				$newdata = array(
-					'idusuario'  => $row->idUsuario,
-					'login'     => $row->login,
-					'tipo' => $row->tipoUsuario
+					'idusuario'   => $row->idUsuario,
+          'nombres'     => $row->nombres,
+					'login'       => $row->login,
+					'tipo'        => $row->tipoUsuario
 				);
+        $exist=true;
+				//$this->session->set_userdata($newdata);
+				$this->session->set_userdata('idusuario', $row->idUsuario);
+				$this->session->set_userdata('nombres', $row->nombres);
+				$this->session->set_userdata('login', $row->login);
+				$this->session->set_userdata('tipo', $row->tipoUsuario);				
+				redirect('usuario/panel',$exist,'refresh');
 
-				$this->session->set_userdata($newdata);
-				// $this->session->set_userdata('idusuario',$row->idUsuario);
-				// $this->session->set_userdata('login',$row->login);
-				// $this->session->set_userdata('tipo',$row->tipo);				
-				redirect('usuario/panel','refresh');
 			}
 		}
 		else
@@ -79,7 +85,7 @@ class Usuario extends CI_Controller
 		{
 			if ($this->session->userdata('tipo')=='admin')
 			{
-				redirect('usuario/listaUsuario','refresh');
+				redirect('usuario/listaUsuario/1','refresh');
 			}
 			else{
 				redirect('usuario/guest','refresh');
@@ -93,7 +99,8 @@ class Usuario extends CI_Controller
 	public function logout()
 	{
 		$this->session->sess_destroy();
-		redirect('usuario/index/1','refresh');
+    $exist=false;
+		redirect('usuario/index/1',$exist,'refresh');
 	}
   public function agregar()
   {
@@ -105,16 +112,19 @@ class Usuario extends CI_Controller
 
   public function crearUsuario()
   {
-    $data['nombre'] = $_POST['nombre'];
-    $data['apellidoPaterno'] = $_POST['apellidoPaterno'];
-    $data['apellidoMaterno'] = $_POST['apellidoMaterno'];
+    $data['nombres'] = $_POST['nombres'];
+    $data['primerApellido'] = $_POST['primerApellido'];
+    $data['segundoApellido'] = $_POST['segundoApellido'];
+    $data['fechaNacimiento'] = $_POST['fechaNacimiento'];
     $data['ci'] = $_POST['ci'];
     $data['login'] = $_POST['login'];
-    $data['password'] = $_POST['password'];
+    $data['password'] = MD5($_POST['password']);
+    $data['genero'] = $_POST['genero'];
+    $data['celular'] = $_POST['celular'];
     $data['direccion'] = $_POST['direccion'];
-    $data['telefono'] = $_POST['telefono'];
     $data['correo'] = $_POST['correo'];
-    $data['tipoUsuario'] = $_POST['tipoUsuario'];
+    //$data['img'] = $_POST['img'];
+    $data['idTipoUsuario'] = $_POST['idTipoUsuario'];
 
     $this->usuario_model->crearUsuario($data);
     redirect('usuario/index', 'refresh');
@@ -134,40 +144,44 @@ class Usuario extends CI_Controller
   public function modificarUsuario()
   {
     $idUsuario = $_POST['idUsuario'];
-    $data['nombre'] = $_POST['nombre'];
-    $data['apellidoPaterno'] = $_POST['apellidoPaterno'];
-    $data['apellidoMaterno'] = $_POST['apellidoMaterno'];
+    $data['nombres'] = $_POST['nombres'];
+    $data['primerApellido'] = $_POST['primerApellido'];
+    $data['segundoApellido'] = $_POST['segundoApellido'];
+    $data['fechaNacimiento'] = $_POST['fechaNacimiento'];
     $data['ci'] = $_POST['ci'];
+    $data['login'] = $_POST['login'];
+    $data['password'] = MD5($_POST['password']);
+    $data['celular'] = $_POST['celular'];
     $data['direccion'] = $_POST['direccion'];
-    $data['telefono'] = $_POST['telefono'];
     $data['correo'] = $_POST['correo'];
-    $data['tipoUsuario'] = $_POST['tipoUsuario'];
+    //$data['img'] = $_POST['img'];
+    $data['idTipoUsuario'] = $_POST['idTipoUsuario'];
 
     $this->usuario_model->modificarUsuario($idUsuario, $data);
     redirect('usuario/index', 'refresh');
   }
 
-  public function eliminarUsuarioBd()
+  public function eliminarUsuarioBd($idUsuario, $estado)
   { 
-    $idUsuario = $_POST['idUsuario'];
-    $this->usuario_model->eliminarUsuario($idUsuario);
+    /* $idUsuario = $_POST['idUsuario']; */
+    $this->usuario_model->eliminarUsuario($idUsuario, $estado);
     redirect('usuario/index', 'refresh');
   }
-  public function deshabilitarUsuarioBd()
+  public function deshabilitarUsuarioBd($idUsuario)
 	{		
-        $idUsuario=$_POST['idUsuario'];
-        $data['estado']='0';
+    /* $idUsuario=$_POST['idUsuario']; */
+    $data['habilitado']='0';
 
-        $this->usuario_model->modificarUsuario($idUsuario,$data);
-        redirect('usuario/index','refresh');
+    $this->usuario_model->modificarUsuario($idUsuario,$data);
+    redirect('usuario/index','refresh');
 	}
-  public function habilitarUsuarioBd()
+  public function habilitarUsuarioBd($idUsuario)
 	{		
-        $idUsuario=$_POST['idUsuario'];
-        $data['estado']='1';
+    /* $idUsuario=$_POST['idUsuario']; */
+    $data['habilitado']='1';
 
-        $this->usuario_model->modificarUsuario($idUsuario,$data);
-        redirect('usuario/deshabilitados','refresh');
+    $this->usuario_model->modificarUsuario($idUsuario,$data);
+    redirect('usuario/deshabilitados','refresh');
 	}
 
   public function deshabilitados()
