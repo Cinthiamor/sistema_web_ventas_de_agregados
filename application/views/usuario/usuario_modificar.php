@@ -23,45 +23,90 @@ foreach ($infoUsuario->result() as $row) {
 
               <form method="post" id="add_create" name="add_create" action="<?= site_url('usuario/modificarUsuario') ?>">
                 <div class="form-group">
-                  <label>Nombre *</label>
-                  <input type="text" name="nombre" class="form-control" value="<?php echo $row->nombre; ?>" required>
+                  <label>Nombre/s *</label>
+                  <input type="text" name="nombres" class="form-control" value="<?php echo $row->nombres; ?>" required>
                   <input type="hidden" name="idUsuario" class="form-control" value="<?php echo $row->idUsuario; ?>">
                 </div>
                 <div class="form-group">
-                  <label>Apellido Paterno *</label>
-                  <input type="text" name="apellidoPaterno" class="form-control" value="<?php echo $row->apellidoPaterno; ?>" required>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <label>Primer Apellido *</label>
+                      <input type="text" name="primerApellido" class="form-control" value="<?php echo $row->primerApellido; ?>" required>
+                    </div>
+                    <div class="col-md-6">
+                      <label>Segundo Apellido</label>
+                      <input type="text" name="segundoApellido" class="form-control" value="<?php echo $row->segundoApellido; ?>">
+                    </div>
+                  </div>
                 </div>
+                <!-- <div class="form-group">
+                <label>Fecha de Nacimiento *</label>
+                <input type="text" name="fechaNacimiento" class="form-control" value="<?php echo $row->fechaNacimiento; ?>"  minlength="6"  required>
+                </div> -->
+
+
                 <div class="form-group">
-                  <label>Apellido Materno</label>
-                  <input type="text" name="apellidoMaterno" class="form-control" value="<?php echo $row->apellidoMaterno; ?>">
+                  <div class="row">
+                    <div class="col-md-5">
+                      <label>Fecha de Nacimiento *</label>
+                      <input type="date" class="form-control" name="fechaNacimiento" required value="<?php echo $row->fechaNacimiento; ?>" >
+                    </div> 
+                    <div class="col-md-4">
+                      <label>Carnet de Identidad *</label>
+                      <input type="text" name="ci" class="form-control" value="<?php echo $row->ci; ?>" minlength="6" required>
+                    </div>
+                    <div class="col-md-3">
+                      <label>Genero *</label>
+                      <br>
+                      <select class="form-select" name="genero" aria-label="seleccionar por defecto" >
+                        <option value="M" <?php set_selected('M', $row->genero); ?>>Masculino</option>
+                        <option value="F" <?php set_selected('F', $row->genero); ?>>Femenino</option>
+                      </select>
+                    </div>
+                  </div>                  
                 </div>
 
                 <div class="form-group">
-                  <label>CI *</label>
-                  <input type="text" name="ci" class="form-control" placeholder="Escriba su numero de carnet de identidad" value="<?php echo $row->ci; ?>" minlength="6" required>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <label>Usuario *</label>
+                      <input type="text" name="login" class="form-control" value="<?php echo $row->login; ?>" minlength="6"  required>                
+                    </div>
+                    <div class="col-md-6">
+                      <label>Contraseña *</label>
+                      <input type="password" name="password" class="form-control"  minlength="6"  required>
+                    </div>
+                  </div>                                                        
                 </div>
 
                 <div class="form-group">
-                  <label>Direccion</label>
-                  <input type="text" name="direccion" class="form-control" value="<?php echo $row->direccion; ?>">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <label>Celular</label>
+                      <input type="text" name="celular" class="form-control" value="<?php echo $row->celular; ?>">
+                    </div>
+                    <div class="col-md-6">
+                      <label>Correo electronico</label>
+                      <input type="email" name="correo" class="form-control" value="<?php echo $row->correo; ?>">
+                    </div>
+                  </div>
                 </div>
-
-                <div class="form-group">
-                  <label>Telefono</label>
-                  <input type="text" name="telefono" class="form-control" value="<?php echo $row->telefono; ?>">
-                </div>
-
-                <div class="form-group">
-                  <label>Correo</label>
-                  <input type="email" name="correo" class="form-control" value="<?php echo $row->correo; ?>">
-                </div>
-
-                <div class="form-group">
-                  <label>Tipo de usuario</label>
-                  <select class="form-select" name="tipoUsuario" aria-label="seleccionar por defecto" >
-                    <option value="admin" <?php set_selected('admin', $row->tipoUsuario); ?>>Admin</option>
-                    <option value="vendedor" <?php set_selected('vendedor', $row->tipoUsuario); ?>>Vendedor</option>
-                  </select>
+                
+                <div class="form-group">                
+                  <div class="row">
+                    <div class="col-md-9">
+                      <label>Direccion</label>
+                      <input type="text" name="direccion" class="form-control" value="<?php echo $row->direccion; ?>">                
+                    </div>
+                    <div class="col-md-3">
+                      <label>Tipo de usuario</label>
+                      <br>
+                      <select class="form-select" name="idTipoUsuario" aria-label="seleccionar por defecto" >
+                        <option value="1" <?php set_selected('admin', $row->idTipoUsuario); ?>>Admin</option>
+                        <option value="2" <?php set_selected('vendedor', $row->idTipoUsuario); ?>>Vendedor</option>
+                      </select>
+                    </div>
+                  </div>                
                 </div>
 
                 <div class="form-group">
