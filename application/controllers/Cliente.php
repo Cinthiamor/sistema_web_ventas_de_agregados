@@ -26,12 +26,25 @@ class Cliente extends CI_Controller
 
   public function crearCliente()
   {
-    $data['nombre_razonSocial'] = $_POST['nombre_razonSocial'];   
+    $data['nombres'] = $_POST['nombres'];   
+    $data['primerApellido'] = $_POST['primerApellido']; 
+    $data['segundoApellido'] = $_POST['segundoApellido']; 
     $data['nit_carnet'] = $_POST['nit_carnet'];    
     $data['direccion'] = $_POST['direccion'];
     $data['telefono'] = $_POST['telefono'];
     $this->cliente_model->crearCliente($data);
     redirect('cliente/index', 'refresh');
+  }
+  public function crearClienteVenta()
+  {
+    $data['nombres'] = $_POST['nombres'];   
+    $data['primerApellido'] = $_POST['primerApellido']; 
+    $data['segundoApellido'] = $_POST['segundoApellido']; 
+    $data['nit_carnet'] = $_POST['nit_carnet'];    
+    $data['direccion'] = $_POST['direccion'];
+    $data['telefono'] = $_POST['telefono'];
+    $this->cliente_model->crearCliente($data);
+    redirect('venta/agregar', 'refresh');
   }
 
   public function modificar()
@@ -45,10 +58,21 @@ class Cliente extends CI_Controller
     $this->load->view('inc_footer');
   }
 
+  public function modificar_recuperar($idCliente)
+  {
+    $data['infoCliente'] = $this->cliente_model->recuperarCliente($idCliente);
+    $this->load->view('inc_header');
+    $this->load->view('inc_menu');
+    $this->load->view('cliente/index', $data);
+    $this->load->view('inc_footer');
+  }
+
   public function modificarCliente()
   {
     $idCliente = $_POST['idCliente'];
-    $data['nombre_razonSocial'] = $_POST['nombre_razonSocial'];    
+    $data['nombres'] = $_POST['nombres'];    
+    $data['primerApellido'] = $_POST['primerApellido']; 
+    $data['segundoApellido'] = $_POST['segundoApellido']; 
     $data['nit_carnet'] = $_POST['nit_carnet'];
     $data['direccion'] = $_POST['direccion'];
     $data['telefono'] = $_POST['telefono'];
@@ -57,24 +81,24 @@ class Cliente extends CI_Controller
     redirect('cliente/index', 'refresh');
   }
 
-  public function eliminarClienteBd()
+  public function eliminarClienteBd($idCliente, $estado)
   { 
-    $idCliente = $_POST['idCliente'];
-    $this->cliente_model->eliminarCliente($idCliente);
+    //$idCliente = $_POST['idCliente'];
+    $this->cliente_model->eliminarCliente($idCliente, $estado);
     redirect('cliente/index', 'refresh');
   }
-  public function deshabilitarClienteBd()
+  public function deshabilitarClienteBd($idCliente)
 	{		
-        $idCliente=$_POST['idCliente'];
-        $data['estado']='0';
+        /* $idCliente=$_POST['idCliente']; */
+        $data['habilitado']='0';
 
         $this->cliente_model->modificarCliente($idCliente,$data);
         redirect('cliente/index','refresh');
 	}
-  public function habilitarClienteBd()
+  public function habilitarClienteBd($idCliente)
 	{		
-        $idCliente=$_POST['idCliente'];
-        $data['estado']='1';
+        /* $idCliente=$_POST['idCliente']; */
+        $data['habilitado']='1';
 
         $this->cliente_model->modificarCliente($idCliente,$data);
         redirect('cliente/deshabilitados','refresh');
